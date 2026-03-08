@@ -1,0 +1,58 @@
+services:
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: ai_web
+    ports:
+      - "${WEB_PORT}:3000"
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:${API_PORT}
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+      - /app/.next
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: ai_api
+    ports:
+      - "${API_PORT}:8000"
+    environment:
+      MINERU_BASE_URL: http://docling:8000
+      UPLOAD_DIR: /data/uploads
+      OUTPUT_DIR: /data/outputs
+    # depends_on:
+    #   docling:
+    #     condition: service_healthy
+    volumes:
+      - ./apps/api:/app
+      - ./data:/data
+
+  docling:
+    build:
+      context: ./services/docling
+      dockerfile: Dockerfile
+    container_name: ai_docling
+    ports:
+      - "${MINERU_PORT}:8000"
+    gpus: all
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    volumes:
+      - ./services/docling:/app
+      - ./data:/data

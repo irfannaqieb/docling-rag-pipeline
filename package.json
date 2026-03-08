@@ -1,0 +1,16 @@
+{
+  "name": "n1-care",
+  "version": "1.0.0",
+  "description": "Technical test for N1 Care",
+  "main": "index.js",
+  "scripts": {
+    "dev:web": "pnpm --dir apps/web dev",
+    "dev:api": "cd apps/api && .venv/bin/fastapi dev app/main.py",
+    "install:all": "pnpm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Irfan Baharuddin",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.1"
+}
