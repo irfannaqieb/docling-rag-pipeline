@@ -114,7 +114,8 @@ type FactGroup = {
 };
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ?? "http://localhost:8000";
+  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ??
+  "http://localhost:8000";
 
 const DEFAULT_INSTRUCTIONS = `Produce an Executive Intelligence Report, not a generic summary.
 
@@ -184,17 +185,25 @@ const reportMarkdownComponents: Components = {
     </header>
   ),
   h2: ({ children }) => <h2 className="report-markdown-heading">{children}</h2>,
-  h3: ({ children }) => <h3 className="report-markdown-subheading">{children}</h3>,
+  h3: ({ children }) => (
+    <h3 className="report-markdown-subheading">{children}</h3>
+  ),
   p: ({ children }) => <p className="report-paragraph">{children}</p>,
-  ol: ({ children }) => <ol className="report-list report-list-ordered">{children}</ol>,
-  ul: ({ children }) => <ul className="report-list report-list-unordered">{children}</ul>,
+  ol: ({ children }) => (
+    <ol className="report-list report-list-ordered">{children}</ol>
+  ),
+  ul: ({ children }) => (
+    <ul className="report-list report-list-unordered">{children}</ul>
+  ),
   li: ({ children }) => <li className="report-list-item">{children}</li>,
   table: ({ children }) => (
     <div className="report-table-wrap">
       <table className="report-table">{children}</table>
     </div>
   ),
-  blockquote: ({ children }) => <blockquote className="report-blockquote">{children}</blockquote>,
+  blockquote: ({ children }) => (
+    <blockquote className="report-blockquote">{children}</blockquote>
+  ),
 };
 
 export default function Home() {
@@ -212,7 +221,9 @@ export default function Home() {
 
     setFiles((currentFiles) => {
       const seen = new Set(
-        currentFiles.map((file) => `${file.name}:${file.size}:${file.lastModified}`),
+        currentFiles.map(
+          (file) => `${file.name}:${file.size}:${file.lastModified}`,
+        ),
       );
       const nextFiles = [...currentFiles];
 
@@ -232,7 +243,9 @@ export default function Home() {
   }
 
   function removeFile(indexToRemove: number) {
-    setFiles((currentFiles) => currentFiles.filter((_, index) => index !== indexToRemove));
+    setFiles((currentFiles) =>
+      currentFiles.filter((_, index) => index !== indexToRemove),
+    );
   }
 
   async function handleSubmit() {
@@ -260,7 +273,9 @@ export default function Home() {
         body: formData,
       });
 
-      const payload = (await response.json()) as GenerateReportResponse | ErrorResponse;
+      const payload = (await response.json()) as
+        | GenerateReportResponse
+        | ErrorResponse;
 
       if (!response.ok) {
         const message =
@@ -278,7 +293,9 @@ export default function Home() {
     } catch (submissionError) {
       setResult(null);
       setError(
-        submissionError instanceof Error ? submissionError.message : "Report generation failed.",
+        submissionError instanceof Error
+          ? submissionError.message
+          : "Report generation failed.",
       );
     } finally {
       setIsSubmitting(false);
@@ -299,15 +316,19 @@ export default function Home() {
                   Review medical PDF output without fighting the interface.
                 </h1>
                 <p className="max-w-2xl text-base leading-7 text-(--ink-soft) md:text-lg">
-                  Upload one or more PDFs, generate the backend report, then read the output as a
-                  narrative first, with grouped evidence and risks beneath it.
+                  Upload one or more PDFs, generate the backend report, then
+                  read the output as a narrative first, with grouped evidence
+                  and risks beneath it.
                 </p>
               </div>
             </div>
 
             <div className="glass-panel rounded-[1.75rem] p-5">
               <div className="grid grid-cols-2 gap-4">
-                <MetricCard label="Selected PDFs" value={String(files.length)} />
+                <MetricCard
+                  label="Selected PDFs"
+                  value={String(files.length)}
+                />
                 <MetricCard
                   label="API Endpoint"
                   value={API_BASE_URL.replace(/^https?:\/\//, "")}
@@ -315,7 +336,9 @@ export default function Home() {
                 />
                 <MetricCard
                   label="Cross-doc Insights"
-                  value={String(result?.stats.cross_document_insight_count ?? 0)}
+                  value={String(
+                    result?.stats.cross_document_insight_count ?? 0,
+                  )}
                 />
                 <MetricCard
                   label="Processing Notes"
@@ -331,9 +354,12 @@ export default function Home() {
             <div className="glass-panel rounded-[1.75rem] p-5 md:p-6">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
-                  <h2 className="text-xl font-semibold text-(--ink-strong)">PDF Picker</h2>
+                  <h2 className="text-xl font-semibold text-(--ink-strong)">
+                    PDF Picker
+                  </h2>
                   <p className="text-sm leading-6 text-(--ink-soft)">
-                    Add PDFs to the batch. Files are sent as repeated `files` fields in one request.
+                    Add PDFs to the batch. Files are sent as repeated `files`
+                    fields in one request.
                   </p>
                 </div>
                 <button
@@ -354,7 +380,8 @@ export default function Home() {
                   Pick multiple PDF files
                 </span>
                 <span className="mt-2 max-w-md text-sm leading-6 text-(--ink-soft)">
-                  Use Ctrl or Shift in the dialog, or reopen the picker to append more files.
+                  Use Ctrl or Shift in the dialog, or reopen the picker to
+                  append more files.
                 </span>
               </button>
 
@@ -382,7 +409,9 @@ export default function Home() {
                         <p className="truncate text-sm font-medium text-(--ink-strong)">
                           {file.name}
                         </p>
-                        <p className="text-xs text-(--ink-soft)">{formatFileSize(file.size)}</p>
+                        <p className="text-xs text-(--ink-soft)">
+                          {formatFileSize(file.size)}
+                        </p>
                       </div>
                       <button
                         type="button"
@@ -399,9 +428,12 @@ export default function Home() {
 
             <div className="glass-panel rounded-[1.75rem] p-5 md:p-6">
               <div className="mb-3">
-                <h2 className="text-xl font-semibold text-(--ink-strong)">Instructions</h2>
+                <h2 className="text-xl font-semibold text-(--ink-strong)">
+                  Instructions
+                </h2>
                 <p className="text-sm leading-6 text-(--ink-soft)">
-                  Override the default prompt when you need a different synthesis style.
+                  Override the default prompt when you need a different
+                  synthesis style.
                 </p>
               </div>
               <textarea
@@ -443,16 +475,27 @@ export default function Home() {
                         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/55">
                           Report Output
                         </p>
-                        <h2 className="mt-2 text-2xl font-semibold text-white">Generated review</h2>
+                        <h2 className="mt-2 text-2xl font-semibold text-white">
+                          Generated review
+                        </h2>
                         <p className="mt-2 text-sm leading-6 text-white/70">
-                          Read the narrative first, then use the structured side rail and document
-                          breakdowns to verify what the backend actually grounded.
+                          Read the narrative first, then use the structured side
+                          rail and document breakdowns to verify what the
+                          backend actually grounded.
                         </p>
                       </div>
 
                       <div className="grid min-w-[18rem] gap-3 sm:grid-cols-2">
-                        <MetricCard label="Documents" value={String(result.stats.document_count)} dark />
-                        <MetricCard label="Chunks" value={String(result.stats.chunk_count)} dark />
+                        <MetricCard
+                          label="Documents"
+                          value={String(result.stats.document_count)}
+                          dark
+                        />
+                        <MetricCard
+                          label="Chunks"
+                          value={String(result.stats.chunk_count)}
+                          dark
+                        />
                         <MetricCard
                           label="Doc Analyses"
                           value={String(result.stats.document_analysis_count)}
@@ -460,7 +503,9 @@ export default function Home() {
                         />
                         <MetricCard
                           label="Insights"
-                          value={String(result.stats.cross_document_insight_count)}
+                          value={String(
+                            result.stats.cross_document_insight_count,
+                          )}
                           dark
                         />
                       </div>
@@ -476,8 +521,8 @@ export default function Home() {
                   <p className="report-kicker">Report Output</p>
                   <h2>No report yet.</h2>
                   <p>
-                    Submit at least one PDF to populate the markdown report and structured evidence
-                    panels.
+                    Submit at least one PDF to populate the markdown report and
+                    structured evidence panels.
                   </p>
                 </div>
               )}
@@ -498,10 +543,14 @@ function ReportSideRail({ result }: { result: GenerateReportResponse }) {
     <aside className="report-side-rail">
       <AsideCard title="Batch overview" eyebrow="Structured snapshot">
         <div className="pill-list">
-          <SummaryPill label={`${result.documents.length} document${result.documents.length === 1 ? "" : "s"}`} />
+          <SummaryPill
+            label={`${result.documents.length} document${result.documents.length === 1 ? "" : "s"}`}
+          />
           <SummaryPill label={`${countTotalFacts(result.documents)} facts`} />
           <SummaryPill label={`${countTotalRisks(result.documents)} risks`} />
-          <SummaryPill label={`${countTotalQuestions(result.documents)} open questions`} />
+          <SummaryPill
+            label={`${countTotalQuestions(result.documents)} open questions`}
+          />
         </div>
 
         <div className="aside-stack mt-4">
@@ -509,9 +558,12 @@ function ReportSideRail({ result }: { result: GenerateReportResponse }) {
             <article key={document.document_id} className="aside-item">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-semibold text-white">{cleanText(document.file_name)}</p>
+                  <p className="font-semibold text-white">
+                    {cleanText(document.file_name)}
+                  </p>
                   <p className="mt-1 text-sm leading-6 text-white/68">
-                    {document.page_count} page{document.page_count === 1 ? "" : "s"}
+                    {document.page_count} page
+                    {document.page_count === 1 ? "" : "s"}
                     {document.contains_table ? " • contains tables" : ""}
                   </p>
                 </div>
@@ -537,7 +589,10 @@ function ReportSideRail({ result }: { result: GenerateReportResponse }) {
         {result.cross_document_analysis.insights.length > 0 ? (
           <div className="aside-stack mt-4">
             {result.cross_document_analysis.insights.map((insight) => (
-              <CrossDocumentInsightCard key={insight.insight_id} insight={insight} />
+              <CrossDocumentInsightCard
+                key={insight.insight_id}
+                insight={insight}
+              />
             ))}
           </div>
         ) : null}
@@ -561,23 +616,35 @@ function ReportSideRail({ result }: { result: GenerateReportResponse }) {
   );
 }
 
-function CrossDocumentInsightCard({ insight }: { insight: CrossDocumentInsight }) {
+function CrossDocumentInsightCard({
+  insight,
+}: {
+  insight: CrossDocumentInsight;
+}) {
   const confidenceLabel = formatConfidence(insight.confidence);
 
   return (
     <article className="aside-item">
       <div className="flex flex-wrap items-center gap-2">
         <p className="font-semibold text-white">{cleanText(insight.title)}</p>
-        {confidenceLabel ? <ConfidenceBadge label={confidenceLabel} dark /> : null}
+        {confidenceLabel ? (
+          <ConfidenceBadge label={confidenceLabel} dark />
+        ) : null}
       </div>
-      <p className="mt-2 text-sm leading-6 text-white/78">{cleanText(insight.description)}</p>
+      <p className="mt-2 text-sm leading-6 text-white/78">
+        {cleanText(insight.description)}
+      </p>
       {insight.involved_documents.length > 0 ? (
         <p className="mt-3 text-xs font-medium uppercase tracking-[0.18em] text-white/48">
           {insight.involved_documents.map(formatDocumentReference).join(" • ")}
         </p>
       ) : null}
       {insight.citations.length > 0 ? (
-        <InlineEvidenceSummary className="mt-3" citations={insight.citations} dark />
+        <InlineEvidenceSummary
+          className="mt-3"
+          citations={insight.citations}
+          dark
+        />
       ) : null}
     </article>
   );
@@ -611,9 +678,18 @@ function DocumentCard({ document }: { document: ReportDocumentSummary }) {
         </div>
 
         <div className="grid min-w-[18rem] gap-3 sm:grid-cols-2">
-          <MetricCard label="Facts" value={String(document.extracted_facts.length)} />
-          <MetricCard label="Risks" value={String(document.risks_or_anomalies.length)} />
-          <MetricCard label="Questions" value={String(document.open_questions.length)} />
+          <MetricCard
+            label="Facts"
+            value={String(document.extracted_facts.length)}
+          />
+          <MetricCard
+            label="Risks"
+            value={String(document.risks_or_anomalies.length)}
+          />
+          <MetricCard
+            label="Questions"
+            value={String(document.open_questions.length)}
+          />
           <MetricCard
             label="Related Docs"
             value={String(document.possible_links_to_other_documents.length)}
@@ -671,7 +747,10 @@ function DocumentCard({ document }: { document: ReportDocumentSummary }) {
             {document.open_questions.length > 0 ? (
               <div className="signal-stack">
                 {document.open_questions.map((question) => (
-                  <QuestionCard key={question.question_id} question={question} />
+                  <QuestionCard
+                    key={question.question_id}
+                    question={question}
+                  />
                 ))}
               </div>
             ) : (
@@ -695,7 +774,10 @@ function DocumentCard({ document }: { document: ReportDocumentSummary }) {
           </SectionCard>
 
           {document.warnings.length > 0 ? (
-            <WarningList title="Document warnings" warnings={document.warnings} />
+            <WarningList
+              title="Document warnings"
+              warnings={document.warnings}
+            />
           ) : null}
         </div>
       </div>
@@ -717,7 +799,11 @@ function SectionCard({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="text-lg font-semibold text-(--ink-strong)">{title}</h3>
-          {subtitle ? <p className="mt-1 text-sm leading-6 text-(--ink-soft)">{subtitle}</p> : null}
+          {subtitle ? (
+            <p className="mt-1 text-sm leading-6 text-(--ink-soft)">
+              {subtitle}
+            </p>
+          ) : null}
         </div>
       </div>
       <div className="mt-4">{children}</div>
@@ -730,8 +816,12 @@ function FactGroupTable({ group }: { group: FactGroup }) {
     <section className="fact-group">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h4 className="text-base font-semibold text-(--ink-strong)">{group.title}</h4>
-          <p className="mt-1 text-sm leading-6 text-(--ink-soft)">{group.description}</p>
+          <h4 className="text-base font-semibold text-(--ink-strong)">
+            {group.title}
+          </h4>
+          <p className="mt-1 text-sm leading-6 text-(--ink-soft)">
+            {group.description}
+          </p>
         </div>
         <span className="rounded-full bg-(--accent-muted) px-2.5 py-1 text-xs font-semibold text-(--accent-strong)">
           {group.facts.length} item{group.facts.length === 1 ? "" : "s"}
@@ -753,9 +843,13 @@ function FactRow({ fact }: { fact: ExtractedFact }) {
   return (
     <article className="fact-row">
       <div>
-        <p className="text-sm font-semibold text-(--ink-strong)">{cleanText(fact.label)}</p>
+        <p className="text-sm font-semibold text-(--ink-strong)">
+          {cleanText(fact.label)}
+        </p>
         {fact.rationale ? (
-          <p className="mt-1 text-sm leading-6 text-(--ink-soft)">{cleanText(fact.rationale)}</p>
+          <p className="mt-1 text-sm leading-6 text-(--ink-soft)">
+            {cleanText(fact.rationale)}
+          </p>
         ) : null}
       </div>
 
@@ -782,11 +876,17 @@ function RiskCard({ risk }: { risk: RiskOrAnomaly }) {
   return (
     <article className="signal-card">
       <div className="flex flex-wrap items-center gap-2">
-        <p className="font-semibold text-(--ink-strong)">{cleanText(risk.title)}</p>
+        <p className="font-semibold text-(--ink-strong)">
+          {cleanText(risk.title)}
+        </p>
         <SeverityBadge severity={risk.severity} />
-        {confidenceLabel ? <ConfidenceBadge label={confidenceLabel} muted /> : null}
+        {confidenceLabel ? (
+          <ConfidenceBadge label={confidenceLabel} muted />
+        ) : null}
       </div>
-      <p className="mt-2 text-sm leading-6 text-(--ink-soft)">{cleanText(risk.description)}</p>
+      <p className="mt-2 text-sm leading-6 text-(--ink-soft)">
+        {cleanText(risk.description)}
+      </p>
       <EvidenceDetails className="mt-3" citations={risk.citations} />
     </article>
   );
@@ -795,8 +895,12 @@ function RiskCard({ risk }: { risk: RiskOrAnomaly }) {
 function QuestionCard({ question }: { question: OpenQuestion }) {
   return (
     <article className="signal-card">
-      <p className="font-semibold text-(--ink-strong)">{cleanText(question.question)}</p>
-      <p className="mt-2 text-sm leading-6 text-(--ink-soft)">{cleanText(question.reason)}</p>
+      <p className="font-semibold text-(--ink-strong)">
+        {cleanText(question.question)}
+      </p>
+      <p className="mt-2 text-sm leading-6 text-(--ink-soft)">
+        {cleanText(question.reason)}
+      </p>
       <EvidenceDetails className="mt-3" citations={question.citations} />
     </article>
   );
@@ -808,10 +912,16 @@ function LinkCard({ link }: { link: PossibleLink }) {
   return (
     <article className="signal-card">
       <div className="flex flex-wrap items-center gap-2">
-        <p className="font-semibold text-(--ink-strong)">Linked document hint</p>
-        {confidenceLabel ? <ConfidenceBadge label={confidenceLabel} muted /> : null}
+        <p className="font-semibold text-(--ink-strong)">
+          Linked document hint
+        </p>
+        {confidenceLabel ? (
+          <ConfidenceBadge label={confidenceLabel} muted />
+        ) : null}
       </div>
-      <p className="mt-2 text-sm leading-6 text-(--ink-soft)">{cleanText(link.description)}</p>
+      <p className="mt-2 text-sm leading-6 text-(--ink-soft)">
+        {cleanText(link.description)}
+      </p>
       <p className="mt-3 rounded-xl border border-(--line) bg-white/80 px-3 py-3 text-sm font-medium leading-6 text-(--ink-strong)">
         {cleanText(link.linked_document_hint)}
       </p>
@@ -854,13 +964,19 @@ function EvidenceDetails({
           >
             <p className="evidence-meta">{formatCitationLocation(citation)}</p>
             {citation.quote_text ? (
-              <p className="evidence-quote">{truncate(cleanText(citation.quote_text), 340)}</p>
+              <p className="evidence-quote">
+                {truncate(cleanText(citation.quote_text), 340)}
+              </p>
             ) : null}
             {citation.chunk_id || citation.block_index !== null ? (
               <p className="text-xs text-(--ink-soft)">
                 {citation.chunk_id ? `Chunk ${citation.chunk_id}` : ""}
-                {citation.chunk_id && citation.block_index !== null ? " • " : ""}
-                {citation.block_index !== null ? `Block ${citation.block_index}` : ""}
+                {citation.chunk_id && citation.block_index !== null
+                  ? " • "
+                  : ""}
+                {citation.block_index !== null
+                  ? `Block ${citation.block_index}`
+                  : ""}
               </p>
             ) : null}
           </article>
@@ -891,7 +1007,8 @@ function InlineEvidenceSummary({
         dark ? "text-white/48" : "text-(--ink-soft)"
       } ${className}`.trim()}
     >
-      {citations.length} citation{citations.length === 1 ? "" : "s"} supporting this finding
+      {citations.length} citation{citations.length === 1 ? "" : "s"} supporting
+      this finding
     </p>
   );
 }
@@ -906,7 +1023,9 @@ function WarningList({
   className?: string;
 }) {
   return (
-    <div className={`rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 ${className}`.trim()}>
+    <div
+      className={`rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 ${className}`.trim()}
+    >
       <p className="text-sm font-semibold text-amber-900">{title}</p>
       <ul className="mt-2 space-y-2 text-sm leading-6 text-amber-800">
         {warnings.map((warning) => (
@@ -933,7 +1052,9 @@ function TextList({
   return (
     <div className={className}>
       {title ? (
-        <p className={`text-sm font-semibold ${dark ? "text-white" : "text-(--ink-strong)"}`}>
+        <p
+          className={`text-sm font-semibold ${dark ? "text-white" : "text-(--ink-strong)"}`}
+        >
           {title}
         </p>
       ) : null}
@@ -964,7 +1085,9 @@ function SeverityBadge({ severity }: { severity: string }) {
         : "bg-emerald-100 text-emerald-700";
 
   return (
-    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold uppercase ${className}`}>
+    <span
+      className={`rounded-full px-2.5 py-1 text-xs font-semibold uppercase ${className}`}
+    >
       {severity}
     </span>
   );
@@ -985,7 +1108,13 @@ function ConfidenceBadge({
       ? "bg-(--surface-muted) text-(--ink-soft)"
       : "bg-(--accent-muted) text-(--accent-strong)";
 
-  return <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${className}`}>{label}</span>;
+  return (
+    <span
+      className={`rounded-full px-2.5 py-1 text-xs font-semibold ${className}`}
+    >
+      {label}
+    </span>
+  );
 }
 
 function SummaryPill({
@@ -1043,7 +1172,9 @@ function MetricCard({
         dark ? "border-white/10 bg-white/6" : "border-white/50 bg-white/55"
       }`}
     >
-      <p className={`text-xs uppercase tracking-[0.25em] ${dark ? "text-white/48" : "text-(--ink-soft)"}`}>
+      <p
+        className={`text-xs uppercase tracking-[0.25em] ${dark ? "text-white/48" : "text-(--ink-soft)"}`}
+      >
         {label}
       </p>
       <p
@@ -1060,14 +1191,19 @@ function MetricCard({
 function ReportMarkdownView({ markdown }: { markdown: string }) {
   return (
     <article className="report-markdown">
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={reportMarkdownComponents}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={reportMarkdownComponents}
+      >
         {markdown}
       </ReactMarkdown>
     </article>
   );
 }
 
-function isGenerateReportResponse(value: unknown): value is GenerateReportResponse {
+function isGenerateReportResponse(
+  value: unknown,
+): value is GenerateReportResponse {
   if (!value || typeof value !== "object") {
     return false;
   }
@@ -1081,15 +1217,24 @@ function isGenerateReportResponse(value: unknown): value is GenerateReportRespon
 }
 
 function countTotalFacts(documents: ReportDocumentSummary[]) {
-  return documents.reduce((total, document) => total + document.extracted_facts.length, 0);
+  return documents.reduce(
+    (total, document) => total + document.extracted_facts.length,
+    0,
+  );
 }
 
 function countTotalRisks(documents: ReportDocumentSummary[]) {
-  return documents.reduce((total, document) => total + document.risks_or_anomalies.length, 0);
+  return documents.reduce(
+    (total, document) => total + document.risks_or_anomalies.length,
+    0,
+  );
 }
 
 function countTotalQuestions(documents: ReportDocumentSummary[]) {
-  return documents.reduce((total, document) => total + document.open_questions.length, 0);
+  return documents.reduce(
+    (total, document) => total + document.open_questions.length,
+    0,
+  );
 }
 
 function getHeadlineFacts(facts: ExtractedFact[]) {
@@ -1097,7 +1242,9 @@ function getHeadlineFacts(facts: ExtractedFact[]) {
     .filter((fact) => fact.fact_type === "lab_result")
     .slice(0, 3)
     .map((fact) =>
-      cleanText(`${fact.label}: ${fact.value}${fact.unit ? ` ${cleanText(fact.unit)}` : ""}`),
+      cleanText(
+        `${fact.label}: ${fact.value}${fact.unit ? ` ${cleanText(fact.unit)}` : ""}`,
+      ),
     );
 }
 
@@ -1152,13 +1299,16 @@ function formatDocumentReference(reference: DocumentReference) {
 }
 
 function formatCitationLocation(citation: Citation) {
-  return [cleanText(citation.file_name || citation.document_id), `p.${citation.page_number}`].join(
-    " • ",
-  );
+  return [
+    cleanText(citation.file_name || citation.document_id),
+    `p.${citation.page_number}`,
+  ].join(" • ");
 }
 
 function humanizeToken(value: string) {
-  return cleanText(value.replaceAll("_", " ")).replace(/\b\w/g, (character) => character.toUpperCase());
+  return cleanText(value.replaceAll("_", " ")).replace(/\b\w/g, (character) =>
+    character.toUpperCase(),
+  );
 }
 
 function formatFileSize(sizeInBytes: number) {
