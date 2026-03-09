@@ -1,5 +1,3 @@
-# N1 Care
-
 Simple Docker-based setup for:
 
 - `web`: Next.js frontend
