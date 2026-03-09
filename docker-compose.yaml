@@ -3,7 +3,7 @@ services:
     build:
       context: ./apps/web
       dockerfile: Dockerfile
-    container_name: ai_web
+    container_name: n1_web
     ports:
       - "${WEB_PORT}:3000"
     environment:
@@ -19,7 +19,7 @@ services:
     build:
       context: ./apps/api
       dockerfile: Dockerfile
-    container_name: ai_api
+    container_name: n1_api
     ports:
       - "${API_PORT}:8000"
     environment:
@@ -37,7 +37,7 @@ services:
     build:
       context: ./services/docling
       dockerfile: Dockerfile
-    container_name: ai_docling
+    container_name: n1_docling
     ports:
       - "${MINERU_PORT}:8000"
     gpus: all
